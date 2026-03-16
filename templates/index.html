@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+
+{% block extra_css %}
+    <link href="{{ url_for('static', filename='css/index.css') }}" rel="stylesheet">
+{% endblock %}
+
+
+{% block content %}
+<form id="searchForm">
+
+    <h1 class="display-6">Universal Journals List Search</h1>
+
+    <!-- Search Bar -->
+    <div class="py-1">
+        <input class="form-control" type="text" id="query" name="query" placeholder="Enter search term" required>
+    </div>
+
+    <!-- Always out options -->
+    <div class="py-1" style="display: flex; align-items: center;">
+
+        <div class="me-3">
+            Search Type:
+        </div>
+
+        <div class="me-3">
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" id="journal_name" name="search_type" value="journal_name"
+                    checked>
+                <label class="form-check-label" for="journal_name">Journal Name</label>
+            </div>
+        </div>
+
+        <div class="me-3">
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" id="issn" name="search_type" value="issn">
+                <label class="form-check-label" for="issn">ISSN</label>
+            </div>
+        </div>
+
+        <div class="me-3">
+            <button class="btn btn-outline-secondary btn-sm" type="button" data-bs-toggle="collapse"
+                data-bs-target="#searchOptions" aria-expanded="false" aria-controls="searchOptions">
+                More Search Options
+            </button>
+        </div>
+
+    </div>
+
+    <!-- Collapsing options -->
+    <div class="collapse" id="searchOptions">
+        <div class="py-1" style="display: flex; align-items: center;">
+
+            <div class="me-3">
+                Search Domain:
+            </div>
+
+            <div class="me-3">
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" id="all" name="search_domain" value="all" checked>
+                    <label class="form-check-label" for="all">All Journals</label>
+                </div>
+            </div>
+
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" id="ja_only" name="search_domain" value="ja_only">
+                <label class="form-check-label" for="ja_only">Journalytics Approved</label>
+            </div>
+
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" id="pr_only" name="search_domain" value="pr_only">
+                <label class="form-check-label" for="pr_only">Predatory Reports</label>
+            </div>
+
+        </div>
+
+        <div class="py-1" style="display: flex; align-items: center;">
+
+            <div class="me-3">Max Results:</div>
+
+            <div>
+                <input class="form-control" style="width: auto;" type="number" id="limit" name="limit" min="1" max="99"
+                    step="1" value="10" required>
+            </div>
+
+        </div>
+    </div>
+    <button class="btn btn-primary my-2" id="searchBtn" type="submit">Search</button>
+</form>
+
+
+<div id="results" class="my-3">
+    <h4>Search journals by name or ISSN.</h4>
+    <p>ISSN querys accept a comma separated list of ISSNs (whitespace ignored).</p>
+</div>
+
+<script src="{{ url_for('static', filename='js/index.js') }}"></script>
+
+
+{% endblock %}

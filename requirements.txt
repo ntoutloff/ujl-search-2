@@ -1,0 +1,7 @@
+pymongo
+flask
+flask_pymongo
+wtforms
+flask_wtf
+dotenv
+pandas

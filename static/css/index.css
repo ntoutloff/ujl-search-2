@@ -1,0 +1,151 @@
+.card {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin: 1.1rem;
+    padding-bottom: 1rem;
+}
+
+.badges-div {
+    display: flex;
+    margin-bottom: 1rem;
+}
+
+
+/* Tabs */
+.tabs {
+    display: flex;
+    border-bottom: 2px solid #ccc;
+    width: 100%;
+    /* ensures full width alignment with table */
+    justify-content: flex-start;
+    overflow-x: auto;
+    margin-top: 1rem;
+}
+
+
+.tab {
+    padding: 10px 20px;
+    cursor: pointer;
+    user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    color: #929292;
+    font-weight: bold;
+    transition: color 0.3s;
+    white-space: nowrap;
+}
+
+.tab.active {
+    border-bottom: 3px solid #0d6efd;
+    color: #4e4e4e;
+}
+
+
+/* Tab Content */
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+/* Table */
+table {
+    border-collapse: collapse;
+    width: auto;
+}
+
+td,
+th {
+    border: 1px solid #999;
+    padding: 6px 10px;
+    vertical-align: top;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    overflow: hidden;
+    /* max-width: 0; */
+    /* Forces break inside flex/grow */
+    background-color: #fffef9;
+}
+
+td.key {
+    background-color: #fdf9ea;
+    font-weight: bold;
+    /* width: 30%; */
+    white-space: nowrap;
+    width: 1%;
+}
+
+
+/* Nested table styles */
+table.nested {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+/* When a table is directly inside a cell, remove that cell's padding */
+td.nester {
+    padding: 0;
+}
+
+ul {
+    margin: 0;
+    /* padding-left: 20px; */
+    padding: 0;
+    list-style-type: none;
+}
+
+/* Remove borders from the first column */
+table.nested td:first-child,
+table.nested th:first-child {
+    border-left: none;
+}
+
+/* Remove borders from the last column */
+table.nested td:last-child,
+table.nested th:last-child {
+    border-right: none;
+}
+
+/* Remove borders from the first row */
+table.nested tr:first-child th,
+table.nested tr:first-child td {
+    border-top: none;
+}
+
+/* Remove borders from the last row */
+table.nested tr:last-child th,
+table.nested tr:last-child td {
+    border-bottom: none;
+}
+
+/* Make tables take full width of their tab content container */
+.tab-content table {
+    width: 100%;
+    border-collapse: collapse;
+    /* table-layout: fixed; */
+    table-layout: auto;
+    /* ensures even column spacing */
+}
+
+/* If the table goes beyond the width of the viewport, make it scroll horizontally */
+.tab-content {
+    display: none;
+    width: 100%;
+    overflow-x: auto;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+.overview-col {
+    display: inline-block;
+    width: fit-content;
+    margin-right: 3rem;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+    max-width: 500px;
+    /* text-align: center; */
+}
+

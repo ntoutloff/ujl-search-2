@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block extra_css %}
+
+{% endblock %}
+
+
+{% block content %}
+<h1 class="display-6">Set Display Name Overrides</h1>
+<p>
+    Choose which journal name/publisher name is displayed as the title on the journal card.
+    <br>Setting an override for a name will remove any previous overrides set for this journal for that field.
+</p>
+
+<hr>
+
+<form action="/submit_override" method="POST">
+
+    <input type="hidden" id="hidden-data" name="journal_data">
+    <div class="my-4">
+        <h4>Journal Names</h4>
+        <div id="journal-names-list"></div>
+        <button type="button" id="uncheck-journal-names" class="btn btn-outline-secondary btn-sm my-2">Clear</button>
+
+    </div>
+
+    <div class="my-4">
+        <h4>Publisher Names</h4>
+        <div id="publisher-names-list"></div>
+        <button type="button" id="uncheck-publisher-names" class="btn btn-outline-secondary btn-sm my-2">Clear</button>
+    </div>
+    <hr>
+
+
+    <div class="me-3">
+        <button type="submit" id="submit-journal-name" class="btn btn-primary">Set Overrides</button>
+    </div>
+
+
+</form>
+
+
+<script>
+    const journalData = {{ journal_data | tojson }};
+</script>
+
+<script src="{{ url_for('static', filename='js/override.js') }}"></script>
+
+{% endblock %}
