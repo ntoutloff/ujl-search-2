@@ -1,26 +1,26 @@
 const searchBtn = document.getElementById('searchBtn');
 
 const displayNameLookup = {
-            abdc: 'ABDC',
-            crossref: 'Crossref',
-            doaj: 'DOAJ',
-            ebsco: 'EBSCO',
-            jufo: 'JUFO',
-            openAlex: 'OpenAlex',
-            predatoryReports: 'Predatory Reports',
-            pubmed: 'PubMed',
-            scimago: 'Scimago',
-            scite: 'Scite',
-            scopus: 'Scopus',
-            zoho: 'Journalytics'
-        };
+    abdc: 'ABDC',
+    crossref: 'Crossref',
+    doaj: 'DOAJ',
+    ebsco: 'EBSCO',
+    jufo: 'JUFO',
+    openAlex: 'OpenAlex',
+    predatoryReports: 'Predatory Reports',
+    pubmed: 'PubMed',
+    scimago: 'Scimago',
+    scite: 'Scite',
+    scopus: 'Scopus',
+    zoho: 'Journalytics'
+};
 
 function renderResults(searchResults) {
     const results = document.getElementById('results')
     results.innerHTML = ''
 
     for (const journalData of searchResults) {
-        
+
         // Journal Card
         const journalCard = document.createElement('div');
         journalCard.className = 'card my-3 px-3';
@@ -43,7 +43,7 @@ function renderResults(searchResults) {
             in_pr: false,
             pr_published: false
         };
-        
+
         if (journalData.locations.zoho) {
             status.in_ja = true;
             journalData.locations.zoho.forEach(record => {
@@ -55,7 +55,7 @@ function renderResults(searchResults) {
                 }
             });
         }
-        
+
         if (journalData.locations.predatoryReports) {
             status.in_pr = true;
             journalData.locations.predatoryReports.forEach(record => {
@@ -71,14 +71,14 @@ function renderResults(searchResults) {
             badgeElement.textContent = "Journalytics Approved";
             badges.append(badgeElement);
         }
-        
+
         if (status.ja_denied) {
             const badgeElement = document.createElement("span");
             badgeElement.className = "badge text-bg-warning me-1";
             badgeElement.textContent = "Journalytics Denied";
             badges.append(badgeElement);
         }
-        
+
         if (status.pr_published) {
             const badgeElement = document.createElement("span");
             badgeElement.className = "badge text-bg-danger me-1";
@@ -117,7 +117,7 @@ function renderResults(searchResults) {
         tabBtn.textContent = 'Overview';
         tabsBlock.appendChild(tabBtn);
         localTabs.push(tabBtn);
-        
+
         // Overview content
         const content = document.createElement('div');
         content.id = 'overview';
@@ -152,7 +152,7 @@ function renderResults(searchResults) {
 
             for (let i = 0; i < journalData.locations[locationName].length; i++) {
                 if (journalData.locations[locationName].length > 1) {
-                    
+
                     // Display the Record number above the record
                     const recordLabel = document.createElement('h5');
                     recordLabel.className = 'text-success';
@@ -160,7 +160,7 @@ function renderResults(searchResults) {
                     content.appendChild(document.createElement('br'));
                     content.appendChild(recordLabel);
                 }
-                
+
                 // Table
                 const table = buildTable(journalData.locations[locationName][i]);
                 content.appendChild(table);
@@ -198,8 +198,8 @@ function createOverview(journalData) {
     // Journal Names
     const journalNamesCol = document.createElement('div');
     journalNamesCol.className = 'overview-col';
-   overviewCols.appendChild(journalNamesCol);
-    
+    overviewCols.appendChild(journalNamesCol);
+
     const journalNamesHeader = document.createElement('h4');
     journalNamesHeader.style = 'border-bottom: 2px solid black;';
     journalNamesHeader.textContent = 'Journal Names';
@@ -209,34 +209,37 @@ function createOverview(journalData) {
     journalNamesList.className = 'list-group list-group-flush';
     journalNamesList.style = 'text-align: left;';
     journalNamesCol.appendChild(journalNamesList);
-    
+
     for (const journalName of journalData.journal_names) {
         const journalNamesListItem = document.createElement('li');
         journalNamesListItem.className = 'list-group-item';
         journalNamesListItem.textContent = journalName;
         journalNamesList.appendChild(journalNamesListItem);
     }
-    
+
     // Publisher Names
-    const publisherNamesCol = document.createElement('div');
-    publisherNamesCol.className = 'overview-col';
-    overviewCols.appendChild(publisherNamesCol);
 
-    const publisherNamesHeader = document.createElement('h4');
-    publisherNamesHeader.style = 'border-bottom: 2px solid black;';
-    publisherNamesHeader.textContent = 'Publisher Names';
-    publisherNamesCol.appendChild(publisherNamesHeader);
+    if (journalData.publisher_names.length >= 1) {
+        const publisherNamesCol = document.createElement('div');
+        publisherNamesCol.className = 'overview-col';
+        overviewCols.appendChild(publisherNamesCol);
 
-    const publisherNamesList = document.createElement('ul');
-    publisherNamesList.className = 'list-group list-group-flush';
-    publisherNamesList.style = 'text-align: left;';
-    publisherNamesCol.appendChild(publisherNamesList);
-    
-    for (const publisherName of journalData.publisher_names) {
-        const publisherNamesListItem = document.createElement('li');
-        publisherNamesListItem.className = 'list-group-item';
-        publisherNamesListItem.textContent = publisherName;
-        publisherNamesList.appendChild(publisherNamesListItem);
+        const publisherNamesHeader = document.createElement('h4');
+        publisherNamesHeader.style = 'border-bottom: 2px solid black;';
+        publisherNamesHeader.textContent = 'Publisher Names';
+        publisherNamesCol.appendChild(publisherNamesHeader);
+
+        const publisherNamesList = document.createElement('ul');
+        publisherNamesList.className = 'list-group list-group-flush';
+        publisherNamesList.style = 'text-align: left;';
+        publisherNamesCol.appendChild(publisherNamesList);
+
+        for (const publisherName of journalData.publisher_names) {
+            const publisherNamesListItem = document.createElement('li');
+            publisherNamesListItem.className = 'list-group-item';
+            publisherNamesListItem.textContent = publisherName;
+            publisherNamesList.appendChild(publisherNamesListItem);
+        }
     }
 
     // ISSNs
@@ -253,7 +256,7 @@ function createOverview(journalData) {
     issnsList.className = 'list-group list-group-flush';
     issnsList.style = 'text-align: left;';
     issnsCol.appendChild(issnsList);
-    
+
     for (const issn of journalData.issns) {
         const issnsListItem = document.createElement('li');
         issnsListItem.className = 'list-group-item';
@@ -280,7 +283,7 @@ function createOverview(journalData) {
         value: JSON.stringify(dataToSend)
     });
     overrideForm.append(overrideInput);
-    
+
     const overrideBtn = document.createElement('button');
     overrideBtn.type = 'submit';
     overrideBtn.className = 'btn btn-outline-primary';
@@ -355,7 +358,7 @@ function buildTable(locationData, isNested = false) {
 document.getElementById('searchForm').addEventListener('submit', function (event) {
     event.preventDefault();
     searchBtn.disabled = true;
-    
+
     const formData = new FormData(this);
     const dataObject = Object.fromEntries(formData.entries());
 
