@@ -1,0 +1,2 @@
+- Update UJL when override is submitted.
+- On override page, add names of sources to each journal/publisher names.
