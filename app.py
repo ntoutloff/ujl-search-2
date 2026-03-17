@@ -32,12 +32,10 @@ def set_overrides(data: dict):
     all_journals: list[str] = journal_data['journal_names']
     all_publishers: list[str] = journal_data['publisher_names']
 
-          
-
-    if journal_override:
+    if journal_override and journal_override != all_journals[0]:
         for name in [name for name in all_journals if name != journal_override]:
             col.find_one_and_delete({'value': name})
-        
+            
         col.insert_one(
             {
                 'type': 'journal_name',
@@ -47,7 +45,7 @@ def set_overrides(data: dict):
             }
         )
 
-    if publisher_override:
+    if publisher_override and publisher_override != all_publishers[0]:
         for name in [name for name in all_publishers if name != publisher_override]:
             col.find_one_and_delete({'value': name})
 

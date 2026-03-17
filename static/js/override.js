@@ -2,8 +2,8 @@ const journalNamesRadioList = document.getElementById('journal-names-list');
 const publisherNamesRadioList = document.getElementById('publisher-names-list');
 
 // Hidden data
-const hiddenData = document.getElementById('hidden-data');
-hiddenData.value = JSON.stringify(journalData);
+const hiddenInput = document.getElementById('hidden-data');
+hiddenInput.value = JSON.stringify(journalData);
 
 
 // Journal name
@@ -31,14 +31,7 @@ for (const value of journalData.journal_names) {
     formCheck.appendChild(formLabel);
 }
 
-// Journal names clear button
-const clearJournalNamesBtn = document.getElementById('uncheck-journal-names');
-clearJournalNamesBtn.addEventListener('click', function () {
-    const radioBtns = document.querySelectorAll('input[type="radio"][name="journal_name_override"]');
-    radioBtns.forEach(function (radioBtn) {
-        radioBtn.checked = false;
-    });
-});
+document.querySelector('input[name="journal_name_override"').checked = true;
 
 
 // Publisher name
@@ -70,13 +63,6 @@ if (journalData.publisher_names.length >= 1) {
         })
         formCheck.appendChild(formLabel);
     }
-
-    // Publisher names clear button
-    const clearPublisherNamesBtn = document.getElementById('uncheck-publisher-names');
-    clearPublisherNamesBtn.addEventListener('click', function () {
-        const radioBtns = document.querySelectorAll('input[type="radio"][name="publisher_name_override"]');
-        radioBtns.forEach(function (radioBtn) {
-            radioBtn.checked = false;
-        })
-    })
 }
+
+document.querySelector('input[name="publisher_name_override"').checked = true;
