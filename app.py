@@ -21,22 +21,59 @@ app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
 app.config['MONGO_URI'] = MONGO_URI + MONGO_DB
 mongo = PyMongo(app)
 
-
 def set_overrides(data: dict):
-    col: Collection = mongo.db.overrides
-
     journal_data = json.loads(data['journal_data'])
-
+    
     journal_override: str = data.get('journal_name_override')
     publisher_override: str = data.get('publisher_name_override')
     all_journals: list[str] = journal_data['journal_names']
     all_publishers: list[str] = journal_data['publisher_names']
+    
+    ujl_coll: Collection = mongo.db.universalJournalList
+    overrides_coll: Collection = mongo.db.overrides
 
+    # Journal Name
     if journal_override and journal_override != all_journals[0]:
-        for name in [name for name in all_journals if name != journal_override]:
-            col.find_one_and_delete({'value': name})
-            
-        col.insert_one(
+        
+        ## Modify UJL
+        docs = ujl_coll.find(
+                {
+                    '$and': [
+                        {'journal_names': journal_override},
+                        {'journal_names': {'$in': [name for name in all_journals if name != journal_override]}}
+                    ]
+                }
+        ).to_list(10)
+
+        if len(docs) == 1:
+            doc = docs[0]
+            ujl_coll.update_one(
+                {"_id": doc['_id']},
+                [
+                    {
+                        "$set": {
+                            "journal_names": {
+                                "$concatArrays": [
+                                    [journal_override],
+                                    {
+                                        "$filter": {
+                                            "input": "$journal_names",
+                                            "cond": {"$ne": ["$$this", journal_override]}
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                ]
+            )
+        else:
+            print(f'For journal, no updates to UJL as there were {len(docs)} matches.')
+
+        # Update overrides collection
+        res = overrides_coll.delete_many({'type': 'journal_name', 'value': {'$in': all_journals}})
+        print(f'{res.deleted_count} journal_name documents deleted from overrides collection.')
+        res = overrides_coll.insert_one(
             {
                 'type': 'journal_name',
                 'value': journal_override,
@@ -44,12 +81,51 @@ def set_overrides(data: dict):
                 'date_added': str(date.today())
             }
         )
+        print('1 journal_name document add to overrides collection.')
 
+    # Publisher Names
     if publisher_override and publisher_override != all_publishers[0]:
-        for name in [name for name in all_publishers if name != publisher_override]:
-            col.find_one_and_delete({'value': name})
 
-        col.insert_one(
+        # Modify UJL
+        docs = ujl_coll.find(
+            {
+                '$and': [
+                    {'publisher_names': publisher_override},
+                    {'publisher_names': {'$in': [name for name in all_publishers if name != publisher_override]}},
+                    {'journal_names': {'$in': all_journals}}
+                ]
+            }
+        ).to_list(10)
+
+        if len(docs) == 1:
+            doc = docs[0]
+            ujl_coll.update_one(
+                {"_id": doc['_id']},
+                [
+                    {
+                        "$set": {
+                            "publisher_names": {
+                                "$concatArrays": [
+                                    [publisher_override],
+                                    {
+                                        "$filter": {
+                                            "input": "$publisher_names",
+                                            "cond": {"$ne": ["$$this", publisher_override]}
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                ]
+            )
+        else:
+            print(f'For publisher, no updates to UJL as there were {len(docs)} matches.')
+
+
+        res = overrides_coll.delete_many({'type': 'publisher_name', 'value': {'$in': all_publishers}})
+        print(f'{res.deleted_count} publisher_name documents deleted from overrides collection.')
+        overrides_coll.insert_one(
             {
                 'type': 'publisher_name',
                 'value': publisher_override,
@@ -58,6 +134,8 @@ def set_overrides(data: dict):
                 'date_added': str(date.today())
             }
         )
+        print('1 publisher_name document added to overrides collection.')
+
 
 def mongo_search(
         query: str,

@@ -9,26 +9,51 @@ load_dotenv()
 URI = os.getenv('MONGO_URI')
 
 with MongoClient(URI) as client:
-    overrides_col = client['UJL']['overrides']
-    ujl_col = client['UJL']['universalJournalList']
-    override_doc = overrides_col.find_one({'type': 'publisher_name'}, {'_id': 0})
+    or_collection = client['UJL']['overrides']
+    ujl_collection = client['UJL']['universalJournalList']
+    override_doc = or_collection.find_one({'value': 'Fish Pathol'})
 
-    print(json.dumps(override_doc, indent=4))
-
-    ujl_docs = ujl_col.find(
+    
+    ujl_docs = ujl_collection.find(
         {
             '$and': [
-                {'publisher_names': {'$in': override_doc['overrides']}},
-                {'journal_names': {'$in': override_doc['for']}}
+                {'journal_names': override_doc['value']},
+                {'journal_names': {'$in': override_doc['overrides']}}
             ]
-        },
-        {
-            '_id': 0,
-            'journal_names': 1,
-            'publisher_names': 1,
-            'issns': 1
         }
-    )
-    for doc in ujl_docs:
-        print(json.dumps(doc, indent=4))
+    ).to_list(10)
+    
+    if len(ujl_docs) == 1:
+        doc_id = ujl_docs[0]['_id']
+        print(doc_id)
+        res = ujl_collection.update_one(
+            {"_id": doc_id},
+            [
+                {
+                    "$set": {
+                        "journal_names": {
+                            "$concatArrays": [
+                                [override_doc['value']],
+                                {
+                                    "$filter": {
+                                        "input": "$journal_names",
+                                        "cond": {"$ne": ["$$this", override_doc['value']]}
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            ]
+        )
+        print(res)
+
+
+
+    elif len(ujl_docs) < 1:
+        print('no results')
+
+    else:
+        print(f'multiple ({len(ujl_docs)}) results were found')
+    
 
