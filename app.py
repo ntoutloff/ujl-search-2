@@ -1,13 +1,9 @@
-from flask import Flask, redirect, render_template, url_for, request, jsonify
-from flask_wtf import FlaskForm
-from wtforms import SubmitField, SelectMultipleField
-from wtforms.widgets import ListWidget, CheckboxInput
+from flask import Flask, redirect, render_template, url_for, request
 from flask_pymongo import PyMongo
 from pymongo.synchronous.collection import Collection
 from dotenv import load_dotenv
 import os
 from pymongo.synchronous.collection import Collection
-import pandas as pd
 from typing import Literal
 import json
 from datetime import date
