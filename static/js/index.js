@@ -287,7 +287,7 @@ function createOverview(journalData) {
     const overrideBtn = document.createElement('button');
     overrideBtn.type = 'submit';
     overrideBtn.className = 'btn btn-outline-primary';
-    overrideBtn.textContent = 'Set Overrides';
+    overrideBtn.textContent = 'Set Display Names';
     overrideForm.appendChild(overrideBtn);
 
     return overviewContent;
